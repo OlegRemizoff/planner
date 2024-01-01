@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Body , HTTPException, status
+from fastapi import APIRouter, Request, HTTPException, Depends, Body, status
 from typing import List
-from app.models.events import Event
+
+from app.models.events import Event, EventUpdate
+from app.database.conections import get_session # маршруты смогут получить доступ к созданному объекту сеанса
 
 
 router = APIRouter(

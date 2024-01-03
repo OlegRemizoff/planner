@@ -32,7 +32,7 @@ class Event(SQLModel, table=True):
 class EventUpdate(SQLModel):
     title: Optional[str]
     image: Optional[str]
-    description: Optional[str]
+    # description: Optional[str]
     tags: Optional[List[str]]
     location: Optional[str]
 

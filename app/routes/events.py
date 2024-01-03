@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Request, HTTPException, Depends, Body, status
-from sqlalchemy import select, delete, insert, func, and_, or_
-from typing import List, Tuple
+from fastapi import APIRouter, HTTPException, Depends, status
+from sqlalchemy import select
+from typing import List
 
 from app.models.events import Event, EventUpdate
 from app.database.conections import get_session # маршруты смогут получить доступ к созданному объекту сеанса
@@ -33,6 +33,7 @@ async def retrive_event(id: int, session=Depends(get_session)) -> Event:
         )
     return event
 
+
 # Создание нового события
 @router.post("/new")
 async def create_event(new_event: Event, session=Depends(get_session)) -> dict:
@@ -42,19 +43,37 @@ async def create_event(new_event: Event, session=Depends(get_session)) -> dict:
     return {"message": "Event created successfully"}
 
 
+# Обновление события
+@router.put("/edit/{id}", response_model=Event)
+async def update_event(id: int, new_data: EventUpdate, session=Depends(get_session)) -> Event:
+    event = session.get(Event, id)
+    if not event: 
+        raise HTTPException(
+            status_code=status. HTTP_404_NOT_FOUND,
+            detail="Event with supplied ID does not exist"
+        )
+    event_data = new_data.dict(exclude_unset=True)
+    for key, value in event_data.items():
+        setattr(event, key, value)
+    session.add(event)
+    session.commit()
+    session.refresh(event)
+    return event
+
+
 # Удаление события
 @router.delete("/{id}")
-async def delete_event(id: int) -> dict:
-    for event in events:
-        if event.id == id:
-            events.remove(event)
-            return { "message": "Event deleted successfully" }
+async def delete_event(id: int, session=Depends(get_session)) -> dict:
+    event = session.get(Event, id)
+    if not event: 
+        raise HTTPException(
+            status_code=status. HTTP_404_NOT_FOUND,
+            detail="Event with supplied ID does not exist"
+        )
     
-    raise HTTPException(
-        status_code=status. HTTP_404_NOT_FOUND,
-        detail="Event with supplied ID does not exist"
-    )
-
+    session.delete(event)
+    session.commit()
+    return {"message": "Event deleted successfully"}
 
 # Удалить все события
 @router.delete("/")

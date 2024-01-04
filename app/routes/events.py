@@ -1,6 +1,10 @@
 from fastapi import APIRouter, Body , HTTPException, status
 from typing import List
-from app.models.events import Event
+
+from sqlalchemy import select
+
+from app.models.events import SEvent, Event
+from app.database.conections import async_session_maker
 
 
 router = APIRouter(
@@ -12,14 +16,16 @@ events = []
 
 
 # Получение всех событий
-@router.get("/", response_model=List[Event])
-async def retrive_all_events() -> List[Event]:
-    return events
-
+@router.get("/")
+async def retrive_all_events() -> None:
+    async with async_session_maker() as session:
+        query = select(Event)
+        result = await session.execute(query)
+        return result.scalars().all()
 
 # Получение события по id
-@router.get("/{id}", response_model=Event)
-async def retrive_event(id: int) -> Event:
+@router.get("/{id}", response_model=SEvent)
+async def retrive_event(id: int) -> SEvent:
     for event in events:
         if event.id == id:
             return event
@@ -31,7 +37,7 @@ async def retrive_event(id: int) -> Event:
 
 # Создание нового события
 @router.post("/new")
-async def create_event(body: Event = Body(...)) -> dict:
+async def create_event(body: SEvent = Body(...)) -> dict:
     events.append(body)
     return {"message": "Event created successfully"}
 

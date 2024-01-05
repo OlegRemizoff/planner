@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Body , HTTPException, status
 from typing import List
 
-from sqlalchemy import select
 
 from app.models.events import SEvent, Event
-from app.database.conections import async_session_maker
+from app.dao.planner_dao import EventDAO
 
 
 router = APIRouter(
@@ -18,10 +17,8 @@ events = []
 # Получение всех событий
 @router.get("/")
 async def retrive_all_events() -> None:
-    async with async_session_maker() as session:
-        query = select(Event)
-        result = await session.execute(query)
-        return result.scalars().all()
+    return await EventDAO.get_find_all()
+    
 
 # Получение события по id
 @router.get("/{id}", response_model=SEvent)

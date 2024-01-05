@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Body , HTTPException, status
 from typing import List
-from app.models.events import Event
+
+
+from app.models.events import SEvent, Event
+from app.dao.planner_dao import EventDAO
 
 
 router = APIRouter(
@@ -12,14 +15,14 @@ events = []
 
 
 # Получение всех событий
-@router.get("/", response_model=List[Event])
-async def retrive_all_events() -> List[Event]:
-    return events
-
+@router.get("/")
+async def retrive_all_events() -> None:
+    return await EventDAO.get_find_all()
+    
 
 # Получение события по id
-@router.get("/{id}", response_model=Event)
-async def retrive_event(id: int) -> Event:
+@router.get("/{id}", response_model=SEvent)
+async def retrive_event(id: int) -> SEvent:
     for event in events:
         if event.id == id:
             return event
@@ -31,7 +34,7 @@ async def retrive_event(id: int) -> Event:
 
 # Создание нового события
 @router.post("/new")
-async def create_event(body: Event = Body(...)) -> dict:
+async def create_event(body: SEvent = Body(...)) -> dict:
     events.append(body)
     return {"message": "Event created successfully"}
 

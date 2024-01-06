@@ -16,21 +16,14 @@ events = []
 
 # Получение всех событий
 @router.get("/")
-async def retrive_all_events() -> None:
+async def retrive_all_events() -> list[SEvent]:
     return await EventDAO.get_find_all()
     
 
 # Получение события по id
-@router.get("/{id}", response_model=SEvent)
+@router.get("/{id}")
 async def retrive_event(id: int) -> SEvent:
-    for event in events:
-        if event.id == id:
-            return event
-    
-    raise HTTPException(
-        status_code=status. HTTP_404_NOT_FOUND,
-        detail="Event with supplied ID does not exist"
-    )
+    return await EventDAO.find_by_id(id)
 
 # Создание нового события
 @router.post("/new")

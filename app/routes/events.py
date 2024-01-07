@@ -1,8 +1,6 @@
-from fastapi import APIRouter, Body , HTTPException, status
-from typing import List
+from fastapi import APIRouter, HTTPException, status
 
-
-from app.models.events import SEvent, Event
+from app.models.events import SEvent
 from app.dao.planner_dao import EventDAO
 
 
@@ -11,7 +9,6 @@ router = APIRouter(
     tags=["Events"]
 )
 
-events = []
 
 
 # Получение всех событий
@@ -25,29 +22,29 @@ async def retrive_all_events() -> list[SEvent]:
 async def retrive_event(id: int) -> SEvent:
     return await EventDAO.find_by_id(id)
 
+
 # Создание нового события
 @router.post("/new")
-async def create_event(body: SEvent = Body(...)) -> dict:
-    events.append(body)
-    return {"message": "Event created successfully"}
+async def create_event(data: SEvent) -> None:
+    return await EventDAO.add(data)
 
-
-# Удаление события
-@router.delete("/{id}")
-async def delete_event(id: int) -> dict:
-    for event in events:
-        if event.id == id:
-            events.remove(event)
-            return { "message": "Event deleted successfully" }
     
-    raise HTTPException(
-        status_code=status. HTTP_404_NOT_FOUND,
-        detail="Event with supplied ID does not exist"
-    )
 
 
-# Удалить все события
-@router.delete("/")
-async def delete_all_events() -> dict:
-    events.clear()
-    return {"message": "Events deleted successfully"}
+   
+   
+   
+   
+   
+   
+   
+   
+   
+
+
+
+
+
+
+
+

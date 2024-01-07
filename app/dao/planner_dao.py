@@ -1,5 +1,5 @@
 from app.database.conections import async_session_maker
-from app.models.events import Event
+from app.models.events import Event, SEvent
 from sqlalchemy import select, insert
 
 
@@ -29,4 +29,17 @@ class BaseDAO:
 class EventDAO(BaseDAO):
     model = Event
 
+    @classmethod
+    async def add(cls, data: SEvent):
+        
+        new_event = insert(Event).values(
+            title=data.title,
+            image=data.image,
+            description=data.description,
+            tags=data.tags,
+            location=data.location
+        )
 
+        async with async_session_maker() as session:
+            await session.execute(new_event)
+            await session.commit()

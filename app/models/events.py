@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Text
 from sqlalchemy.dialects.postgresql import JSONB
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
 
 from app.database.conections import Base
 
@@ -18,12 +18,11 @@ class SEvent(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {
-                    "id": 0,
-                    "title": "FastAPI Book Launch",
+                    "title": "FastAPI framework",
                     "image": "https://linktomyimage.com/image.png",
-                    "description": "BlaBlaBla....",
+                    "description": "Text",
                     "tags": ["python", "fastapi"],
-                    "location": "Google Meet"
+                    "location": "Orel, Russia"
                 }
             ]
         }

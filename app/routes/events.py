@@ -1,8 +1,7 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter
 
 from app.models.events import SEvent
 from app.dao.planner_dao import EventDAO
-
 
 router = APIRouter(
     prefix="/event",
@@ -29,10 +28,13 @@ async def create_event(data: SEvent) -> None:
     return await EventDAO.add(data)
 
     
+# Удаление события
+@router.delete("/delete{id}")
+async def delete_event(id: int) -> None:
+    return await EventDAO.delete_by_id(id)
 
 
-   
-   
+
    
    
    

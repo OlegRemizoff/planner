@@ -23,9 +23,18 @@ class BaseDAO:
             return result.scalars().all()
     
 
-        
-        
+    @classmethod
+    async def delete_by_id(cls, model_id: int):
+        async with async_session_maker() as session:          
+            obj = await session.get(cls.model, model_id)
+            if obj:
+                await session.delete(obj)
+                await session.commit()
+                return {"message": "Object has been successefuly deleted"}
+            return {"message": "Object not found"}
+            
 
+        
 class EventDAO(BaseDAO):
     model = Event
 

@@ -52,3 +52,21 @@ class EventDAO(BaseDAO):
         async with async_session_maker() as session:
             await session.execute(new_event)
             await session.commit()
+            return {"message": "Object has been successefuly created"}
+
+    @classmethod
+    async def update(cls, id: int, new_data: SEvent):
+        async with async_session_maker() as session: 
+            event = await session.get(cls.model, id)
+            if event:
+                try:
+                    event_data = new_data.dict(exclude_unset=True)
+                    for key, value in event_data.items():
+                        setattr(event, key, value)
+                        session.add(event)
+                        await session.commit()
+                        await session.refresh(event)
+                        return {"message": "Object has been successefuly updated"}
+                except:
+                    return Exception("Somethin went wrong...")
+            return {"message": "Object not found"}

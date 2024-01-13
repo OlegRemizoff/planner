@@ -24,24 +24,32 @@ async def retrive_event(id: int) -> SEvent:
 
 # Создание нового события
 @router.post("/new")
-async def create_event(data: SEvent) -> None:
+async def create_event(data: SEvent) -> dict:
     return await EventDAO.add(data)
 
+
+# Обновление события
+@router.put("/{id}")
+async def update_event(id: int, new_data: SEvent) -> dict:
+    return await EventDAO.update(id, new_data)
     
+
 # Удаление события
 @router.delete("/delete{id}")
-async def delete_event(id: int) -> None:
+async def delete_event(id: int) -> dict:
     return await EventDAO.delete_by_id(id)
 
 
 
+
+
+
    
    
+
+
    
    
-   
-   
-   
 
 
 
@@ -50,3 +58,12 @@ async def delete_event(id: int) -> None:
 
 
 
+{
+  "title": "updated",
+  "image": "https://google.com/image",
+  "description": "blablalba",
+  "tags": [
+    "python"
+  ],
+  "location": "Russia"
+}

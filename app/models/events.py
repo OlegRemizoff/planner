@@ -29,9 +29,6 @@ class SEvent(BaseModel):
     }
 
 
-
-
-
 class Event(Base):
     __tablename__ = "events"
 

@@ -25,13 +25,13 @@ async def retrive_event(id: int) -> SEvent:
 # Создание нового события
 @router.post("/new")
 async def create_event(data: SEvent) -> dict:
-    return await EventDAO.add(data)
+    return await EventDAO.add_event(data)
 
 
 # Обновление события
 @router.put("/{id}")
 async def update_event(id: int, new_data: SEvent) -> dict:
-    return await EventDAO.update(id, new_data)
+    return await EventDAO.update_event(id, new_data)
     
 
 # Удаление события

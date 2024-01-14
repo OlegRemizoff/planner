@@ -1,5 +1,6 @@
 from app.database.conections import async_session_maker
 from app.models.events import Event, SEvent
+from app.models.users import Users
 from sqlalchemy import select, insert
 
 
@@ -13,7 +14,12 @@ class BaseDAO:
             result = await session.execute(query)
             return result.scalars().one_or_none()
 
-
+    @classmethod
+    async def find_one_or_none(cls, **filter_by):
+        async with async_session_maker() as session:
+            query = select(cls.model).filter_by(**filter_by)
+            result = await session.execute(query)
+            return result.scalar_one_or_none()
 
     @classmethod
     async def get_find_all(cls):
@@ -32,6 +38,13 @@ class BaseDAO:
                 await session.commit()
                 return {"message": "Object has been successefuly deleted"}
             return {"message": "Object not found"}
+
+    @classmethod
+    async def add(cls, **data):
+        async with async_session_maker() as session:
+            query = insert(cls.model).values(**data)
+            await session.execute(query)
+            await session.commit()
             
 
         
@@ -39,9 +52,9 @@ class EventDAO(BaseDAO):
     model = Event
 
     @classmethod
-    async def add(cls, data: SEvent):
+    async def add_event(cls, data: SEvent):
         
-        new_event = insert(Event).values(
+        new_event = insert(cls.model).values(
             title=data.title,
             image=data.image,
             description=data.description,
@@ -55,7 +68,7 @@ class EventDAO(BaseDAO):
             return {"message": "Object has been successefuly created"}
 
     @classmethod
-    async def update(cls, id: int, new_data: SEvent):
+    async def update_event(cls, id: int, new_data: SEvent):
         async with async_session_maker() as session: 
             event = await session.get(cls.model, id)
             if event:
@@ -70,3 +83,9 @@ class EventDAO(BaseDAO):
                 except:
                     return Exception("Somethin went wrong...")
             return {"message": "Object not found"}
+        
+
+
+class UsersDAO(BaseDAO):
+    model = Users
+    

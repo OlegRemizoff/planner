@@ -16,7 +16,7 @@ class Users(Base):
 
 
 
-class SUserRegister(BaseModel):
+class SUserAuth(BaseModel):
     email: EmailStr
     password: str
 
@@ -31,21 +31,6 @@ class SUserRegister(BaseModel):
         }
     }
 
-
-class UserSignIn(BaseModel):
-    email: EmailStr
-    password: str
-
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
-                {
-                    "email": "fastapi@packt.com",
-                    "password": "Stro0ng!",
-                }
-            ]
-        }
-    }
 
 
 

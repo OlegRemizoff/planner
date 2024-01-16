@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from app.models.events import SEvent
 from app.dao.planner_dao import EventDAO
 
+
 router = APIRouter(
     prefix="/event",
     tags=["Events"]
@@ -46,7 +47,6 @@ async def delete_event(id: int) -> dict:
 
    
    
-
 
    
    

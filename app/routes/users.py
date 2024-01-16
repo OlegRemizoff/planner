@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Response, status
-from app.models.users import SUserAuth
+from fastapi import APIRouter, HTTPException, Response, Depends, status
+from app.models.users import SUserAuth, Users
 from app.dao.planner_dao import UsersDAO
 from app.auth import get_password_hash, create_access_token, authenticate_user
+from app.dependencies import get_current_user
 
 
 router = APIRouter(
@@ -33,6 +34,12 @@ async def login_user(response: Response, user_data: SUserAuth):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User not found"
         )
-    access_token = create_access_token({"sub": user.id, })
+    access_token = create_access_token({"sub": str(user.id)})
     response.set_cookie("events_access_token", access_token, httponly=True)
     return {"access_token": access_token}
+
+
+
+@router.get("/get")
+async def get_user(user: Users = Depends(get_current_user)):
+    print(user, type(user), user.email)

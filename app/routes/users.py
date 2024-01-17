@@ -39,7 +39,15 @@ async def login_user(response: Response, user_data: SUserAuth):
     return {"access_token": access_token}
 
 
+# Выход из аккаунта
+@router.post("/logout")
+async def login_user(response: Response) -> dict:
+    response.delete_cookie("events_access_token")
+    return {"message": "Logout has been success!"}
 
+
+
+# Получение информации о пользователе
 @router.get("/get")
 async def get_user(user: Users = Depends(get_current_user)):
     print(user, type(user), user.email)

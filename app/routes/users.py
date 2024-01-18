@@ -50,4 +50,4 @@ async def login_user(response: Response) -> dict:
 # Получение информации о пользователе
 @router.get("/get")
 async def get_user(user: Users = Depends(get_current_user)):
-    print(user, type(user), user.email)
+    return user

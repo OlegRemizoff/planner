@@ -59,7 +59,9 @@ class EventDAO(BaseDAO):
             image=data.image,
             description=data.description,
             tags=data.tags,
-            location=data.location
+            location=data.location,
+            user_id=data.user_id,
+            date_to=data.date_to
         )
 
         async with async_session_maker() as session:

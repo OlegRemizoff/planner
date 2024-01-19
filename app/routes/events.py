@@ -1,7 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from app.models.events import SEvent
+from app.models.users import Users
 from app.dao.planner_dao import EventDAO
+from app.dependencies import get_current_user
 
 
 router = APIRouter(
@@ -10,11 +12,16 @@ router = APIRouter(
 )
 
 
+        # async with async_session_maker() as session:
+        #     query = select(Event).filter_by(user_id=user.id)
+        #     result = await session.execute(query)
+        #     return result.scalars().all()
+
 
 # Получение всех событий
 @router.get("/")
-async def retrive_all_events() -> list[SEvent]:
-    return await EventDAO.get_find_all()
+async def retrive_all_events(user: Users = Depends(get_current_user)) -> list[SEvent]:
+    return await EventDAO.get_find_all(user_id=user.id)
     
 
 # Получение события по id

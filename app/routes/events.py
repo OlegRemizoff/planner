@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.models.events import SEvent
 from app.models.users import Users
@@ -12,12 +12,6 @@ router = APIRouter(
 )
 
 
-        # async with async_session_maker() as session:
-        #     query = select(Event).filter_by(user_id=user.id)
-        #     result = await session.execute(query)
-        #     return result.scalars().all()
-
-
 # Получение всех событий
 @router.get("/")
 async def retrive_all_events(user: Users = Depends(get_current_user)) -> list[SEvent]:
@@ -26,8 +20,15 @@ async def retrive_all_events(user: Users = Depends(get_current_user)) -> list[SE
 
 # Получение события по id
 @router.get("/{id}")
-async def retrive_event(id: int) -> SEvent:
-    return await EventDAO.find_by_id(id)
+async def retrive_event(id: int, user: Users = Depends(get_current_user)) -> SEvent:
+    result = await EventDAO.find_one_or_none(id=id, user_id=user.id)
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Event not found"
+        )
+    return result
+
 
 
 # Создание нового события

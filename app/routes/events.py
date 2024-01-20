@@ -45,7 +45,13 @@ async def update_event(id: int, new_data: SEvent) -> dict:
 
 # Удаление события
 @router.delete("/delete{id}")
-async def delete_event(id: int) -> dict:
+async def delete_event(id: int, user: Users = Depends(get_current_user)) -> dict:
+    result = await EventDAO.find_one_or_none(id=id, user_id=user.id)
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Event not found"
+        )
     return await EventDAO.delete_by_id(id)
 
 

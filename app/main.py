@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
@@ -7,13 +7,14 @@ from .routers.users import router as user_router
 from .routers.events import router as event_router
 from .routers.pages import router as pages_router
 
+from app.routers.pages import templates
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="app/static"), "static")
 
-@app.get("/")
-async def read_root():
-    return {"message": "Hello, World"}
+@app.get("/", name="home")
+async def get_home_page(request: Request):
+    return templates.TemplateResponse("home.html", {"request": request})
 
 
 

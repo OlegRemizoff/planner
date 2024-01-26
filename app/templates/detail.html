@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %} {{ event.title }} {% endblock %}
+
+
+{% block content %}
+<div class='snippet'>
+    <div class='metadata'>
+        <strong>{{ event.title }}</strong>
+        <span>#{{ event.id }}</span>
+    </div>
+    <pre><code>{{ event.description }}</code></pre>
+    <div class='metadata'>
+        <time>Создан: {{ event.date_to }}</time>
+    </div>
+</div>
+{% endblock  %}

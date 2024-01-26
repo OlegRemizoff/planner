@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %} Все события {% endblock %}
+
+
+{% block content %}
+
+<h2>Последние Заметки</h2>
+{% for item in events %}
+<table>
+	<tr>
+		<th>
+		<td><a href="{{ url_for('detail', id=item.id) }}">{{ item.title }}</a></td>
+		</th>
+		<th>{{ item.date_to }}</th>
+		<th>{{ item.id }}</th>
+	</tr>
+</table>
+{% endfor %}
+
+{% endblock %}
+
+

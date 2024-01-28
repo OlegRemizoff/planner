@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi_cache.decorator import cache
+import asyncio
 
 from app.models.events import SEvent
 from app.models.users import Users
@@ -14,7 +16,9 @@ router = APIRouter(
 
 # Получение всех событий
 @router.get("/")
+@cache(expire=60)
 async def retrive_all_events(user: Users = Depends(get_current_user)) -> list[SEvent]:
+    await asyncio.sleep(2)
     return await EventDAO.get_find_all(user_id=user.id)
     
 

@@ -15,14 +15,8 @@ down:
 	alembic downgrade -1
 
 
-# shell:
-# 	python manage.py shell
+celery:
+	celery -A app.tasks.celery:celery worker --loglevel=INFO
 
-# makemigrations:
-# 	python manage.py makemigrations
-
-# migrate: makemigrations
-# 	python manage.py migrate
-
-# su:
-# 	python manage.py createsuperuser
+flower:
+	celery -A app.tasks.celery:celery flower

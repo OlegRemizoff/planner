@@ -3,7 +3,7 @@ from app.models.users import SUserAuth, Users
 from app.dao.planner_dao import UsersDAO
 from app.auth import get_password_hash, create_access_token, authenticate_user
 from app.dependencies import get_current_user
-
+from app.tasks.tasks import send_email
 
 router = APIRouter(
     prefix="/auth",
@@ -22,6 +22,7 @@ async def register_user(user_data: SUserAuth) -> dict:
         )
     hashed_password = get_password_hash(user_data.password)
     await UsersDAO.add(email=user_data.email, hashed_password=hashed_password)
+    send_email.delay(user_data.email)
     return {"message": "Operation has been successfully completed"}
 
 

@@ -1,7 +1,6 @@
 run:
 	uvicorn app.main:app --reload
 
-
 init: 
 	cd app/ && alembic init migrations 
 

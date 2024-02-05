@@ -22,7 +22,7 @@ async def register_user(user_data: SUserAuth) -> dict:
         )
     hashed_password = get_password_hash(user_data.password)
     await UsersDAO.add(email=user_data.email, hashed_password=hashed_password)
-    send_email.delay(user_data.email)
+    # send_email.delay(user_data.email)
     return {"message": "Operation has been successfully completed"}
 
 

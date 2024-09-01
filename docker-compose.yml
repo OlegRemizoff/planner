@@ -1,0 +1,43 @@
+version: '3.9'
+
+# docker-compose logs web 
+
+
+
+services:
+  web:
+    image: notice_image 
+    build: 
+      context: .
+    container_name: notice_app
+    env_file:
+      - .env-non-dev
+    ports:
+      - "8000:8000"
+    command: bash -c "
+      alembic upgrade head &&
+      gunicorn -w 1 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 app.main:app"
+      
+    depends_on:
+      - db
+  db:
+    image: postgres:15
+    container_name: pgdb
+    volumes:
+      - fastapi_postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env-non-dev
+    healthcheck:
+      test:
+        [
+            "CMD-SHELL", "pg_isready -d postgres -U postgres"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  fastapi_postgres_data: {}
+
+
+  

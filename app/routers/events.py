@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.models.events import SEvent
 from app.models.users import Users
 from app.dao.planner_dao import EventDAO
-from app.dependencies import get_current_user
+from app.dependencies import get_current_user, check_text
 
 
 router = APIRouter(
@@ -16,7 +16,7 @@ router = APIRouter(
 @router.get("/")
 async def retrive_all_events(user: Users = Depends(get_current_user)) -> list[SEvent]:
     return await EventDAO.get_find_all(user_id=user.id)
-    
+
 
 # Получение события по id
 @router.get("/{id}")
@@ -30,10 +30,11 @@ async def retrive_event(id: int, user: Users = Depends(get_current_user)) -> SEv
     return result
 
 
-
 # Создание нового события
 @router.post("/new")
-async def create_event(data: SEvent) -> dict:
+async def create_event(data: SEvent, corrected_text: dict = Depends(check_text)) -> dict:
+    data.description = corrected_text
+    print("\x1b[31;1m" + "Descripton" + "\x1b[0m", data.description)
     return await EventDAO.add_event(data)
 
 
@@ -41,7 +42,7 @@ async def create_event(data: SEvent) -> dict:
 @router.put("/{id}")
 async def update_event(id: int, new_data: SEvent) -> dict:
     return await EventDAO.update_event(id, new_data)
-    
+
 
 # Удаление события
 @router.delete("/delete{id}")
@@ -55,29 +56,13 @@ async def delete_event(id: int, user: Users = Depends(get_current_user)) -> dict
     return await EventDAO.delete_by_id(id)
 
 
-
-
-
-
-   
-   
-
-   
-   
-
-
-
-
-
-
-
-
+# Пример заполнения JSON
 {
-  "title": "updated",
-  "image": "https://google.com/image",
-  "description": "blablalba",
-  "tags": [
-    "python"
-  ],
-  "location": "Russia"
+    "title": "updated",
+    "image": "https://google.com/image",
+    "description": "blablalba",
+    "tags": [
+        "python"
+    ],
+    "location": "Russia"
 }

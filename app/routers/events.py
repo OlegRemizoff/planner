@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-
+from fastapi import APIRouter, Depends, HTTPException, status, Response
+import requests
 from app.models.events import SEvent
 from app.models.users import Users
 from app.dao.planner_dao import EventDAO
+from app.dependencies import get_current_user
+from app.utils import check_text
 from app.dependencies import get_current_user, check_text
 
 
@@ -10,6 +12,7 @@ router = APIRouter(
     prefix="/event",
     tags=["Events"]
 )
+
 
 
 # Получение всех событий
@@ -32,10 +35,13 @@ async def retrive_event(id: int, user: Users = Depends(get_current_user)) -> SEv
 
 # Создание нового события
 @router.post("/new")
-async def create_event(data: SEvent, corrected_text: dict = Depends(check_text)) -> dict:
-    data.description = corrected_text
-    print("\x1b[31;1m" + "Descripton" + "\x1b[0m", data.description)
-    return await EventDAO.add_event(data)
+async def create_event(data: SEvent) -> dict:
+    raw_text = str(data.description) # забираем текст из JSON-формы и передаем его в check_text
+    correxted_text = await check_text(text=raw_text) 
+    print("\x1b[31;1m" + "До     " + "\x1b[0m", data.description)
+    print("\x1b[31;1m" + "После  " + "\x1b[0m", correxted_text)
+    return Response("Success!")
+    # return await EventDAO.add_event(data)
 
 
 # Обновление события

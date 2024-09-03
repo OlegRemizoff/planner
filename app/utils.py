@@ -17,5 +17,5 @@ async def check_text(text: str):
                     corrected_text = corrected_text.replace(
                         error['word'], error['s'][0])
             return corrected_text
-        
+
     return text

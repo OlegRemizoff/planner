@@ -48,7 +48,7 @@ API при ревью задачи (шаблоны curl запросов, postma
 
  
 ### 1) Из директории, где расположен файл Dockerfile, выполните команду 
-    docker compose up --build
+    docker compose up
 
 ### 2) Перейти по адресу
      http://127.0.0.1:8000
